@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
+        <script defer src="https://pyscript.net/latest/pyscript.js"></script>
+
+        <style>
+            #table-container {
+                max-height: 300px; /* Adjust the maximum height as needed */
+                overflow-y: auto; /* Add a vertical scrollbar when the content overflows */
+                width: 100%; /* Ensure the container spans the full width */
+
+            }
+
+            #table-container table {
+                width: 100%; /* Set the table width to 100% to match the container width */
+                table-layout: fixed; /* Use fixed table layout to ensure proper sizing */
+            }
+
+            #table-container table th {
+                width: 100px; /* Adjust the width as needed */
+            }
+
+            .dataih {
+                width: 100%; /* Make the table span the entire container width */
+                border-collapse: collapse; /* Collapse table borders */
+                font-family: Arial, sans-serif; /* Specify a font family */
+                font-size: 14px; /* Set the font size */
+            }
+
+            .dataih th{
+                background-color: #f2f2f2; /* Background color for header cells */
+                text-align: left; /* Align text to the left */
+                border-bottom: 2px solid #333; /* Add a bottom border */
+            }
+            .dataih td {
+                border-bottom: 1px solid #ddd; /* Add a bottom border to separate rows */
+            }
+
+            #plot1 {
+                width: auto; /* Set the desired width for your container */
+                height: auto; /* Set the desired height for your container */
+                overflow: hidden; /* Hide the overflow to crop the image */
+            }
+
+        </style>
+    </head>
+
+    <body>
+
+        <py-config>
+            packages = [
+              "matplotlib",
+              "pandas"
+            ]
+        </py-config>
+
+        <py-script>
+            import pandas as pd
+            import matplotlib.pyplot as plt
+            from pyodide.http import open_url
+            import html
+
+            url = 'https://raw.githubusercontent.com/MasterANK/Visual-Dropout/main/Statement_SES_2010-11-DropOut.csv'
+            url_content = open_url(url)
+
+            rcsv = pd.read_csv(url_content)
+            df = pd.DataFrame(rcsv)
+            
+            html_table = df.to_html(classes="dataih",index=False)
+            Element("table-container").element.innerHTML= html_table
+
+            fig, ax = plt.subplots(figsize=(8,5.5))
+            plt.plot(df['Year'],df['All Categories - Classes I-V - Boys'], marker='o',label='Boys',color='blue')
+            plt.plot(df['Year'],df['All Categories - Classes I-V - Girls'], marker='o',label='Girls',color='red')
+            plt.xticks(rotation=45)
+            plt.legend()
+            
+            Element("plot1").write(plt)
+        </py-script>
+
+    </body>
+    <div id="table-container"></div>
+    <div id="plot1"></div>
+
+</html>
