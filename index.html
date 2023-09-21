@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
         <script defer src="https://pyscript.net/latest/pyscript.js"></script>
 
@@ -36,17 +37,54 @@
             .dataih td {
                 border-bottom: 1px solid #ddd; /* Add a bottom border to separate rows */
             }
-
-            #plot1 {
+            
+            .plots {
                 width: auto; /* Set the desired width for your container */
                 height: auto; /* Set the desired height for your container */
                 overflow: hidden; /* Hide the overflow to crop the image */
             }
+            #plot-container {
+                text-align: center; /* Center align content within the container */
+            }
+            #plot-column {
+                display: flex; /* Use flexbox for side-by-side images */
+                justify-content: space-between; /* Distribute space between the two images */
+                margin-bottom: 20px; /* Add space between the two rows of images */
+                flex-wrap: wrap;
+            }
+
+            #plot-column img {
+                width: 100%; /* Set a specific width for each side-by-side image */
+                height: auto; /* Maintain aspect ratio */
+            }
+
+            #centered-image img {
+                display: block; /* Center-align the image */
+                margin: 0 auto; /* Center the image horizontally within its container */
+                max-width: 100%; /* Ensure the image doesn't exceed its container's width */
+            }
+
+            .center {
+            text-align: center;
+            z-index: 1;
+            }
+
 
         </style>
     </head>
 
     <body>
+        <div id="table-container"></div>
+        <div class=center><p>All Categories - Classes I-V</p></div>
+        <div id="plot-containers">
+            <div id="plot-column">
+                <div id="plot1" class="plots"></div>
+                <div id="plot2" class="plots"></div>
+            </div>
+            <div id="centered-image">
+                <div id="plot3"></div>
+            </div>
+        </div>
 
         <py-config>
             packages = [
@@ -61,26 +99,41 @@
             from pyodide.http import open_url
             import html
 
+            #csv linking below
             url = 'https://raw.githubusercontent.com/MasterANK/Visual-Dropout/main/Statement_SES_2010-11-DropOut.csv'
             url_content = open_url(url)
 
+            #dataframe building
             rcsv = pd.read_csv(url_content)
             df = pd.DataFrame(rcsv)
-            
+
+            #table work below
             html_table = df.to_html(classes="dataih",index=False)
             Element("table-container").element.innerHTML= html_table
 
+            ##matplotlib All Categories - Classes I-V Drawings#
+            #line plot
             fig, ax = plt.subplots(figsize=(8,5.5))
             plt.plot(df['Year'],df['All Categories - Classes I-V - Boys'], marker='o',label='Boys',color='blue')
             plt.plot(df['Year'],df['All Categories - Classes I-V - Girls'], marker='o',label='Girls',color='red')
             plt.xticks(rotation=45)
             plt.legend()
-            
             Element("plot1").write(plt)
+
+            #pie plot
+            avg_boys = df['All Categories - Classes I-V - Boys'].sum()/len(df['Year'])
+            avg_girls = df['All Categories - Classes I-V - Girls'].sum()/len(df['Year'])
+            plt.figure(figsize=(5, 5))
+            plt.pie([avg_girls, avg_boys], labels=['Girls', 'Boys'], autopct='%1.1f%%', startangle=90, colors=['pink', 'blue'])
+            Element("plot2").write(plt)
+
+            #bar graph
+            plt.figure(figsize=(8, 5.5))
+            plt.bar(df['Year'],df['All Categories - Classes I-V - Total'])
+            plt.xticks(rotation=45)
+            Element("plot3").write(plt)
         </py-script>
 
     </body>
-    <div id="table-container"></div>
-    <div id="plot1"></div>
 
 </html>
