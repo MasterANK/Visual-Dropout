@@ -24,7 +24,6 @@
 
         <py-config>
             packages = [
-              "matplotlib",
               "pandas",
               "plotly"
             ]
@@ -32,7 +31,6 @@
 
         <py-script>
             import pandas as pd
-            import matplotlib.pyplot as plt
             from pyodide.http import open_url
             import plotly.express as px
             import plotly.graph_objs as go
@@ -53,7 +51,7 @@
             html_table = df.to_html(classes="dataih",index=False)
             Element("table-container").element.innerHTML= html_table
 
-            ##matplotlib All Categories - Classes I-V Drawings#
+            ##plotly All Categories - Classes I-V Drawings#
             #line plot
             fig= px.line(df, x='Year', y=['All Categories - Classes I-V - Boys','All Categories - Classes I-V - Girls'], markers =True)
             graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
@@ -68,12 +66,6 @@
             js.Plotly.newPlot("plot2", js.JSON.parse(graphJSON))
 
             #bar graph
-            """
-            plt.figure(figsize=(8, 5.5))
-            plt.bar(df['Year'],df['All Categories - Classes I-V - Total'])
-            plt.xticks(rotation=45)
-            Element("plot3").write(plt) 
-            """
             fig = px.bar(df,x='Year',y='All Categories - Classes I-V - Total',width=800, height=400)
             fig.update_layout(yaxis_range=[0,100])
             graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
