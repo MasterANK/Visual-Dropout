@@ -8,17 +8,26 @@
         <script src='https://cdn.plot.ly/plotly-2.26.0.min.js'></script>
         <!--<link rel="stylesheet" type="text/css" href="https://raw.githack.com/MasterANK/Visual-Dropout/main/basestyle.css" /> -->
         <link rel="stylesheet" type="text/css" href="basestyle.css" />
+
+        <!-- Helpers Syntax Below (DELETE THIS ON RELEASE)
+        pyscript.interpreter.globals.get('main')
+        -->
     </head>
 
     <body>
         <div id="table-container"></div>
         <div class=catselector>
-            <p>All Categories - Classes I-V</p>
+            <p>Visualize Data</p>
         <select id="dropdown">
-            <option value="apple">Apple</option>
-            <option value="banana">Banana</option>
-            <option value="cherry">Cherry</option>
-            <option value="orange">Orange</option>
+            <option value="All Categories - Classes I-V - ">All Categories - Classes I-V</option>
+            <option value="All Categories - Classes I-VIII - ">All Categories - Classes I-VIII</option>
+            <option value="All Categories - Classes I-X - ">All Categories - Classes I-X</option>
+            <option value="Scheduled Caste - Classes I-V - ">Scheduled Caste - Classes I-V</option>
+            <option value="Scheduled Caste - Classes I-VIII - ">Scheduled Caste - Classes I-VIII</option>
+            <option value="Scheduled Caste - Classes I-X - ">Scheduled Caste - Classes I-X</option>
+            <option value="Scheduled Tribe - Classes I-V - ">Scheduled Tribe - Classes I-V</option>
+            <option value="Scheduled Tribe - Classes I-VIII - ">Scheduled Tribe - Classes I-VIII</option>
+            <option value="Scheduled Tribe - Classes I-X - ">Scheduled Tribe - Classes I-X</option>
         </select>
         </div>          
         <div id="plot-containers">
@@ -30,6 +39,18 @@
                 <div id="plot3"></div>
             </div>
         </div>
+
+        <script>
+var dropdown = document.getElementById("dropdown");
+
+dropdown.addEventListener("change", function () {
+    var selectedValue = dropdown.value;
+    
+    var selectedText = dropdown.options[dropdown.selectedIndex].value;
+    var plotg = pyscript.interpreter.globals.get('plotg')
+    plotg(selectedText)
+});
+        </script>
 
         <py-config>
             packages = [
@@ -60,25 +81,27 @@
             html_table = df.to_html(classes="dataih",index=False)
             Element("table-container").element.innerHTML= html_table
 
-            ##plotly All Categories - Classes I-V Drawings#
-            #line plot
-            fig= px.line(df, x='Year', y=['All Categories - Classes I-V - Boys','All Categories - Classes I-V - Girls'], markers =True)
-            graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
-            js.Plotly.newPlot("plot1", js.JSON.parse(graphJSON))
+            def plotg(yaxis='All Categories - Classes I-V - '):
+                ##plotly All Categories - Classes I-V Drawings#
+                #line plot
+                fig= px.line(df, x='Year', y=[yaxis+'Boys',yaxis+'Girls'], markers =True)
+                graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+                js.Plotly.newPlot("plot1", js.JSON.parse(graphJSON))
 
+                #pie plot
+                avg_boys = df[yaxis+'Boys'].sum()/len(df['Year'])
+                avg_girls = df[yaxis+'Girls'].sum()/len(df['Year'])
+                fig = px.pie(values=[avg_boys,avg_girls], names=['Boys','Girls'])
+                graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+                js.Plotly.newPlot("plot2", js.JSON.parse(graphJSON))
 
-            #pie plot
-            avg_boys = df['All Categories - Classes I-V - Boys'].sum()/len(df['Year'])
-            avg_girls = df['All Categories - Classes I-V - Girls'].sum()/len(df['Year'])
-            fig = px.pie(values=[avg_boys,avg_girls], names=['Boys','Girls'])
-            graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
-            js.Plotly.newPlot("plot2", js.JSON.parse(graphJSON))
+                #bar graph
+                fig = px.bar(df,x='Year',y=yaxis+'Total',width=800, height=400)
+                fig.update_layout(yaxis_range=[0,100])
+                graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+                js.Plotly.newPlot("plot3", js.JSON.parse(graphJSON))
+            plotg()
 
-            #bar graph
-            fig = px.bar(df,x='Year',y='All Categories - Classes I-V - Total',width=800, height=400)
-            fig.update_layout(yaxis_range=[0,100])
-            graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
-            js.Plotly.newPlot("plot3", js.JSON.parse(graphJSON))
         </py-script>
 
     </body>
