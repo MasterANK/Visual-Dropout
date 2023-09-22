@@ -60,8 +60,18 @@
 
 }
 
-.center {
-text-align: center;
-z-index: 1;
+.catselector {
+    display: flex; /* Use flexbox */
+    align-items: center; /* Vertically center the content */
 }
 
+/* Optional styles for spacing between the elements */
+.catselector p {
+    margin-right: 10px; /* Adjust the margin as needed */
+}
+
+#dropdown {
+    width: 275px;
+    margin-left: auto;
+    margin-right: 60px;
+}
