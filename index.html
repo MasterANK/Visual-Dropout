@@ -5,72 +5,8 @@
         <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
         <script defer src="https://pyscript.net/latest/pyscript.js"></script>
 
-        <style>
-            #table-container {
-                max-height: 300px; /* Adjust the maximum height as needed */
-                overflow-y: auto; /* Add a vertical scrollbar when the content overflows */
-                width: 100%; /* Ensure the container spans the full width */
-
-            }
-
-            #table-container table {
-                width: 100%; /* Set the table width to 100% to match the container width */
-                table-layout: fixed; /* Use fixed table layout to ensure proper sizing */
-            }
-
-            #table-container table th {
-                width: 100px; /* Adjust the width as needed */
-            }
-
-            .dataih {
-                width: 100%; /* Make the table span the entire container width */
-                border-collapse: collapse; /* Collapse table borders */
-                font-family: Arial, sans-serif; /* Specify a font family */
-                font-size: 14px; /* Set the font size */
-            }
-
-            .dataih th{
-                background-color: #f2f2f2; /* Background color for header cells */
-                text-align: left; /* Align text to the left */
-                border-bottom: 2px solid #333; /* Add a bottom border */
-            }
-            .dataih td {
-                border-bottom: 1px solid #ddd; /* Add a bottom border to separate rows */
-            }
-            
-            .plots {
-                width: auto; /* Set the desired width for your container */
-                height: auto; /* Set the desired height for your container */
-                overflow: hidden; /* Hide the overflow to crop the image */
-            }
-            #plot-container {
-                text-align: center; /* Center align content within the container */
-            }
-            #plot-column {
-                display: flex; /* Use flexbox for side-by-side images */
-                justify-content: space-between; /* Distribute space between the two images */
-                margin-bottom: 20px; /* Add space between the two rows of images */
-                flex-wrap: wrap;
-            }
-
-            #plot-column img {
-                width: 100%; /* Set a specific width for each side-by-side image */
-                height: auto; /* Maintain aspect ratio */
-            }
-
-            #centered-image img {
-                display: block; /* Center-align the image */
-                margin: 0 auto; /* Center the image horizontally within its container */
-                max-width: 100%; /* Ensure the image doesn't exceed its container's width */
-            }
-
-            .center {
-            text-align: center;
-            z-index: 1;
-            }
-
-
-        </style>
+        <script src='https://cdn.plot.ly/plotly-2.26.0.min.js'></script>
+        <link rel="stylesheet" type="text/css" href="https://raw.githack.com/MasterANK/Visual-Dropout/main/basestyle.css" />
     </head>
 
     <body>
@@ -89,7 +25,8 @@
         <py-config>
             packages = [
               "matplotlib",
-              "pandas"
+              "pandas",
+              "plotly"
             ]
         </py-config>
 
@@ -97,6 +34,11 @@
             import pandas as pd
             import matplotlib.pyplot as plt
             from pyodide.http import open_url
+            import plotly.express as px
+            import plotly.graph_objs as go
+            import plotly
+            import json
+            import js
             import html
 
             #csv linking below
@@ -113,25 +55,29 @@
 
             ##matplotlib All Categories - Classes I-V Drawings#
             #line plot
-            fig, ax = plt.subplots(figsize=(8,5.5))
-            plt.plot(df['Year'],df['All Categories - Classes I-V - Boys'], marker='o',label='Boys',color='blue')
-            plt.plot(df['Year'],df['All Categories - Classes I-V - Girls'], marker='o',label='Girls',color='red')
-            plt.xticks(rotation=45)
-            plt.legend()
-            Element("plot1").write(plt)
+            fig= px.line(df, x='Year', y=['All Categories - Classes I-V - Boys','All Categories - Classes I-V - Girls'], markers =True)
+            graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+            js.Plotly.newPlot("plot1", js.JSON.parse(graphJSON))
+
 
             #pie plot
             avg_boys = df['All Categories - Classes I-V - Boys'].sum()/len(df['Year'])
             avg_girls = df['All Categories - Classes I-V - Girls'].sum()/len(df['Year'])
-            plt.figure(figsize=(5, 5))
-            plt.pie([avg_girls, avg_boys], labels=['Girls', 'Boys'], autopct='%1.1f%%', startangle=90, colors=['pink', 'blue'])
-            Element("plot2").write(plt)
+            fig = px.pie(values=[avg_boys,avg_girls], names=['Boys','Girls'])
+            graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+            js.Plotly.newPlot("plot2", js.JSON.parse(graphJSON))
 
             #bar graph
+            """
             plt.figure(figsize=(8, 5.5))
             plt.bar(df['Year'],df['All Categories - Classes I-V - Total'])
             plt.xticks(rotation=45)
-            Element("plot3").write(plt)
+            Element("plot3").write(plt) 
+            """
+            fig = px.bar(df,x='Year',y='All Categories - Classes I-V - Total',width=800, height=400)
+            fig.update_layout(yaxis_range=[0,100])
+            graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+            js.Plotly.newPlot("plot3", js.JSON.parse(graphJSON))
         </py-script>
 
     </body>
