@@ -6,12 +6,21 @@
         <script defer src="https://pyscript.net/latest/pyscript.js"></script>
 
         <script src='https://cdn.plot.ly/plotly-2.26.0.min.js'></script>
-        <link rel="stylesheet" type="text/css" href="https://raw.githack.com/MasterANK/Visual-Dropout/main/basestyle.css" />
+        <!--<link rel="stylesheet" type="text/css" href="https://raw.githack.com/MasterANK/Visual-Dropout/main/basestyle.css" /> -->
+        <link rel="stylesheet" type="text/css" href="basestyle.css" />
     </head>
 
     <body>
         <div id="table-container"></div>
-        <div class=center><p>All Categories - Classes I-V</p></div>
+        <div class=catselector>
+            <p>All Categories - Classes I-V</p>
+        <select id="dropdown">
+            <option value="apple">Apple</option>
+            <option value="banana">Banana</option>
+            <option value="cherry">Cherry</option>
+            <option value="orange">Orange</option>
+        </select>
+        </div>          
         <div id="plot-containers">
             <div id="plot-column">
                 <div id="plot1" class="plots"></div>

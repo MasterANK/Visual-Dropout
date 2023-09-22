@@ -60,8 +60,12 @@
 
 }
 
-.center {
-text-align: center;
-z-index: 1;
+.catselector {
+    display: inline-block; /* Display as inline-block to place elements on the same line */
+    margin-right: 10px; /* Add margin for spacing */
 }
 
+/* Style the select element */
+#dropdown {
+    width: 150px; /* Set a specific width for the dropdown */
+}
