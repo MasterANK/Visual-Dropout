@@ -25,7 +25,9 @@
         <py-config>
             packages = [
               "pandas",
-              "plotly"
+              "plotly",
+              "numpy",
+              "scipy"
             ]
         </py-config>
 
@@ -44,13 +46,13 @@
 
         <py-script>
             import pandas as pd
+            import numpy as np
+            from scipy.optimize import curve_fit
             from pyodide.http import open_url
             import plotly.express as px
-            import plotly.graph_objs as go
             import plotly
             import json
             import js
-            import html
             
             #csv linking below
             url = 'https://raw.githubusercontent.com/MasterANK/Visual-Dropout/main/Statement_SES_2010-11-DropOut.csv'
@@ -60,11 +62,17 @@
             rcsv = pd.read_csv(url_content)
             df = pd.DataFrame(rcsv)
 
-            def linplot(inptext):
+            def exponential_func(x, a, b):
+              return a * np.exp(b * x)
+
+            def linplot(inptext='All Categories - Classes I-V - '):
+              popt, _ = curve_fit(exponential_func, df['Year'], df[inptext+'Total'])
               fig= px.scatter(df, x='Year', y=inptext+'Total')
               graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
               js.Plotly.newPlot("linearplot", js.JSON.parse(graphJSON))
 
+
+            linplot()
           </py-script>
 
         </body>
