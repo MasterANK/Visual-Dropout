@@ -10,13 +10,37 @@
     </head>
 
     <body>
-      <div id="linearplot"></div>
+      <select id="dropdown">
+        <option value="All Categories - Classes I-V - ">All Categories - Classes I-V</option>
+        <option value="All Categories - Classes I-VIII - ">All Categories - Classes I-VIII</option>
+        <option value="All Categories - Classes I-X - ">All Categories - Classes I-X</option>
+        <option value="Scheduled Caste - Classes I-V - ">Scheduled Caste - Classes I-V</option>
+        <option value="Scheduled Caste - Classes I-VIII - ">Scheduled Caste - Classes I-VIII</option>
+        <option value="Scheduled Caste - Classes I-X - ">Scheduled Caste - Classes I-X</option>
+        <option value="Scheduled Tribe - Classes I-V - ">Scheduled Tribe - Classes I-V</option>
+        <option value="Scheduled Tribe - Classes I-VIII - ">Scheduled Tribe - Classes I-VIII</option>
+        <option value="Scheduled Tribe - Classes I-X - ">Scheduled Tribe - Classes I-X</option>
+    </select>
+    <div id="linearplot"></div>
         <py-config>
             packages = [
               "pandas",
               "plotly"
             ]
         </py-config>
+
+        <script>
+          var dropdown = document.getElementById("dropdown");
+          
+          dropdown.addEventListener("change", function () {
+              var selectedValue = dropdown.value;
+              
+              var selectedText = dropdown.options[dropdown.selectedIndex].value;
+              var linplot = pyscript.interpreter.globals.get('linplot')
+              linplot(selectedText)
+          });
+          </script>
+
 
         <py-script>
             import pandas as pd
@@ -36,8 +60,10 @@
             rcsv = pd.read_csv(url_content)
             df = pd.DataFrame(rcsv)
 
-            def linplot():
-                print("Under Work")
+            def linplot(inptext):
+              fig= px.scatter(df, x='Year', y=inptext+'Total')
+              graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+              js.Plotly.newPlot("linearplot", js.JSON.parse(graphJSON))
 
           </py-script>
 
