@@ -27,7 +27,8 @@
               "pandas",
               "plotly",
               "numpy",
-              "scipy"
+              "scipy",
+              "statsmodels"
             ]
         </py-config>
 
@@ -62,12 +63,23 @@
             rcsv = pd.read_csv(url_content)
             df = pd.DataFrame(rcsv)
 
-            def exponential_func(x, a, b):
+            def exponent_func(x, a, b):
               return a * np.exp(b * x)
 
             def linplot(inptext='All Categories - Classes I-V - '):
-              popt, _ = curve_fit(exponential_func, df['Year'], df[inptext+'Total'])
-              fig= px.scatter(df, x='Year', y=inptext+'Total')
+              df[inptext+'Total'].interpolate(method='linear', inplace=True)
+              yearlist = []
+              for i in df['Year']:
+                yearlist.append(int(i[:4:]))
+              df["proper_year"] = yearlist
+
+              model = np.polyfit(df['proper_year'], df[inptext+'Total'], 1)
+              trendline = np.poly1d(model)
+              x_values = [year for year in range(2011, 2031)]  # Extend the x-values as needed
+              y_values = trendline(x_values)
+
+              fig= px.scatter(df, x='proper_year', y=df[inptext+'Total'], labels={'y_line': 'Line Plot'},trendline='ewm',trendline_options=dict(halflife=2))
+              fig.add_scatter(x=x_values, y=y_values, mode='lines', name='Trendline (Extended)')
               graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
               js.Plotly.newPlot("linearplot", js.JSON.parse(graphJSON))
 
