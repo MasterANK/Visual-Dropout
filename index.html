@@ -40,17 +40,100 @@
             </div>
         </div>
 
+        <div id="compare-holder">
+            <div id="lCompare">
+                <select id="ldropdown2">
+                    <option value="All Categories - Classes I-V - ">All Categories - Classes I-V</option>
+                    <option value="All Categories - Classes I-VIII - ">All Categories - Classes I-VIII</option>
+                    <option value="All Categories - Classes I-X - ">All Categories - Classes I-X</option>
+                    <option value="Scheduled Caste - Classes I-V - ">Scheduled Caste - Classes I-V</option>
+                    <option value="Scheduled Caste - Classes I-VIII - ">Scheduled Caste - Classes I-VIII</option>
+                    <option value="Scheduled Caste - Classes I-X - ">Scheduled Caste - Classes I-X</option>
+                    <option value="Scheduled Tribe - Classes I-V - ">Scheduled Tribe - Classes I-V</option>
+                    <option value="Scheduled Tribe - Classes I-VIII - ">Scheduled Tribe - Classes I-VIII</option>
+                    <option value="Scheduled Tribe - Classes I-X - ">Scheduled Tribe - Classes I-X</option>
+                </select>
+                <select id="lplotdropdown">
+                    <option value="line">Line Graph</option>
+                    <option value="pie">Pie Chart</option>
+                    <option value="bar">Bar Graph</option>
+                </select>
+                <div id="plotholder">
+                    <div id="lplot"></div>
+                </div>
+            </div>
+
+            <div id="rCompare">
+                <select id="rdropdown2">
+                    <option value="All Categories - Classes I-V - ">All Categories - Classes I-V</option>
+                    <option value="All Categories - Classes I-VIII - ">All Categories - Classes I-VIII</option>
+                    <option value="All Categories - Classes I-X - ">All Categories - Classes I-X</option>
+                    <option value="Scheduled Caste - Classes I-V - ">Scheduled Caste - Classes I-V</option>
+                    <option value="Scheduled Caste - Classes I-VIII - ">Scheduled Caste - Classes I-VIII</option>
+                    <option value="Scheduled Caste - Classes I-X - ">Scheduled Caste - Classes I-X</option>
+                    <option value="Scheduled Tribe - Classes I-V - ">Scheduled Tribe - Classes I-V</option>
+                    <option value="Scheduled Tribe - Classes I-VIII - ">Scheduled Tribe - Classes I-VIII</option>
+                    <option value="Scheduled Tribe - Classes I-X - ">Scheduled Tribe - Classes I-X</option>
+                </select>
+                <select id="rplotdropdown">
+                    <option value="line">Line Graph</option>
+                    <option value="pie">Pie Chart</option>
+                    <option value="bar">Bar Graph</option>
+                </select>
+                <div id="plotholder">
+                    <div id="rplot"></div>
+                </div>
+            </div>
+        </div>
+
         <script>
 var dropdown = document.getElementById("dropdown");
 
+var ldropdown2 = document.getElementById("ldropdown2");
+var lplotdropdown = document.getElementById("lplotdropdown");
+var rdropdown2 = document.getElementById("rdropdown2");
+var rplotdropdown = document.getElementById("rplotdropdown");
+
 dropdown.addEventListener("change", function () {
-    var selectedValue = dropdown.value;
-    
     var selectedText = dropdown.options[dropdown.selectedIndex].value;
     var plotg = pyscript.interpreter.globals.get('plotg')
     plotg(selectedText)
 });
+
+ldropdown2.addEventListener("change", function () {
+    var selectedcat = ldropdown2.options[ldropdown2.selectedIndex].value;
+    var selectedgraph = lplotdropdown.options[lplotdropdown.selectedIndex].value;
+    var lplotcompare = pyscript.interpreter.globals.get('lplotcompare')
+    console.log(selectedcat,selectedgraph)
+    lplotcompare(yaxis=selectedcat,charttype=selectedgraph)
+});
+
+lplotdropdown.addEventListener("change", function () {
+    var selectedcat = ldropdown2.options[ldropdown2.selectedIndex].value;
+    var selectedgraph = lplotdropdown.options[lplotdropdown.selectedIndex].value;
+    var lplotcompare = pyscript.interpreter.globals.get('lplotcompare')
+    console.log(selectedcat,selectedgraph)
+    lplotcompare(yaxis=selectedcat,charttype=selectedgraph)
+});
+
+rdropdown2.addEventListener("change", function () {
+    var selectedcat = rdropdown2.options[rdropdown2.selectedIndex].value;
+    var selectedgraph = rplotdropdown.options[rplotdropdown.selectedIndex].value;
+    var rplotcompare = pyscript.interpreter.globals.get('rplotcompare')
+    console.log(selectedcat,selectedgraph)
+    rplotcompare(yaxis=selectedcat,charttype=selectedgraph)
+});
+
+rplotdropdown.addEventListener("change", function () {
+    var selectedcat = rdropdown2.options[rdropdown2.selectedIndex].value;
+    var selectedgraph = rplotdropdown.options[rplotdropdown.selectedIndex].value;
+    var rplotcompare = pyscript.interpreter.globals.get('rplotcompare')
+    console.log(selectedcat,selectedgraph)
+    rplotcompare(yaxis=selectedcat,charttype=selectedgraph)
+});
+
         </script>
+
 
         <py-config>
             packages = [
@@ -98,7 +181,46 @@ dropdown.addEventListener("change", function () {
                 fig.update_layout(yaxis_range=[0,100])
                 graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
                 js.Plotly.newPlot("plot3", js.JSON.parse(graphJSON))
+
+            def lplotcompare(yaxis='All Categories - Classes I-V - ',charttype="line"):
+                ##plotly All Categories - Classes I-V Drawings#
+                #line plot
+                global comfig
+                if charttype == "line":
+                    comfig= px.line(df, x='Year', y=[yaxis+'Boys',yaxis+'Girls'], markers =True)
+                elif charttype == "pie":
+                    #pie plot
+                    avg_boys = df[yaxis+'Boys'].sum()/len(df['Year'])
+                    avg_girls = df[yaxis+'Girls'].sum()/len(df['Year'])
+                    comfig = px.pie(values=[avg_boys,avg_girls], names=['Boys','Girls'])
+                elif charttype == "bar":
+                    #bar graph
+                    comfig = px.bar(df,x='Year',y=yaxis+'Total',width=700, height=400)
+                    comfig.update_layout(yaxis_range=[0,100])
+                graphJSON = json.dumps(comfig, cls=plotly.utils.PlotlyJSONEncoder)
+                js.Plotly.newPlot("lplot", js.JSON.parse(graphJSON))
+
+            def rplotcompare(yaxis='All Categories - Classes I-V - ',charttype="line"):
+                ##plotly All Categories - Classes I-V Drawings#
+                #line plot
+                global comfig
+                if charttype == "line":
+                    comfig= px.line(df, x='Year', y=[yaxis+'Boys',yaxis+'Girls'], markers =True)
+                elif charttype == "pie":
+                    #pie plot
+                    avg_boys = df[yaxis+'Boys'].sum()/len(df['Year'])
+                    avg_girls = df[yaxis+'Girls'].sum()/len(df['Year'])
+                    comfig = px.pie(values=[avg_boys,avg_girls], names=['Boys','Girls'])
+                elif charttype == "bar":
+                    #bar graph
+                    comfig = px.bar(df,x='Year',y=yaxis+'Total',width=700, height=400)
+                    comfig.update_layout(yaxis_range=[0,100])
+                graphJSON = json.dumps(comfig, cls=plotly.utils.PlotlyJSONEncoder)
+                js.Plotly.newPlot("rplot", js.JSON.parse(graphJSON))
+
             plotg()
+            lplotcompare()
+            rplotcompare()
 
         </py-script>
 
