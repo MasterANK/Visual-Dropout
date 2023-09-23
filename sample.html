@@ -10,23 +10,50 @@
     </head>
 
     <body>
-      <div id="linearplot"></div>
+      <select id="dropdown">
+        <option value="All Categories - Classes I-V - ">All Categories - Classes I-V</option>
+        <option value="All Categories - Classes I-VIII - ">All Categories - Classes I-VIII</option>
+        <option value="All Categories - Classes I-X - ">All Categories - Classes I-X</option>
+        <option value="Scheduled Caste - Classes I-V - ">Scheduled Caste - Classes I-V</option>
+        <option value="Scheduled Caste - Classes I-VIII - ">Scheduled Caste - Classes I-VIII</option>
+        <option value="Scheduled Caste - Classes I-X - ">Scheduled Caste - Classes I-X</option>
+        <option value="Scheduled Tribe - Classes I-V - ">Scheduled Tribe - Classes I-V</option>
+        <option value="Scheduled Tribe - Classes I-VIII - ">Scheduled Tribe - Classes I-VIII</option>
+        <option value="Scheduled Tribe - Classes I-X - ">Scheduled Tribe - Classes I-X</option>
+    </select>
+    <div id="linearplot"></div>
         <py-config>
             packages = [
               "pandas",
-              "plotly"
+              "plotly",
+              "numpy",
+              "scipy",
+              "statsmodels"
             ]
         </py-config>
 
+        <script>
+          var dropdown = document.getElementById("dropdown");
+          
+          dropdown.addEventListener("change", function () {
+              var selectedValue = dropdown.value;
+              
+              var selectedText = dropdown.options[dropdown.selectedIndex].value;
+              var linplot = pyscript.interpreter.globals.get('linplot')
+              linplot(selectedText)
+          });
+          </script>
+
+
         <py-script>
             import pandas as pd
+            import numpy as np
+            from scipy.optimize import curve_fit
             from pyodide.http import open_url
             import plotly.express as px
-            import plotly.graph_objs as go
             import plotly
             import json
             import js
-            import html
             
             #csv linking below
             url = 'https://raw.githubusercontent.com/MasterANK/Visual-Dropout/main/Statement_SES_2010-11-DropOut.csv'
@@ -36,9 +63,28 @@
             rcsv = pd.read_csv(url_content)
             df = pd.DataFrame(rcsv)
 
-            def linplot():
-                print("Under Work")
+            def exponent_func(x, a, b):
+              return a * np.exp(b * x)
 
+            def linplot(inptext='All Categories - Classes I-V - '):
+              df[inptext+'Total'].interpolate(method='linear', inplace=True)
+              yearlist = []
+              for i in df['Year']:
+                yearlist.append(int(i[:4:]))
+              df["proper_year"] = yearlist
+
+              model = np.polyfit(df['proper_year'], df[inptext+'Total'], 1)
+              trendline = np.poly1d(model)
+              x_values = [year for year in range(2011, 2031)]  # Extend the x-values as needed
+              y_values = trendline(x_values)
+
+              fig= px.scatter(df, x='proper_year', y=df[inptext+'Total'], labels={'y_line': 'Line Plot'},trendline='ewm',trendline_options=dict(halflife=2))
+              fig.add_scatter(x=x_values, y=y_values, mode='lines', name='Trendline (Extended)')
+              graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+              js.Plotly.newPlot("linearplot", js.JSON.parse(graphJSON))
+
+
+            linplot()
           </py-script>
 
         </body>
