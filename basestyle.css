@@ -30,6 +30,27 @@
 .dataih td {
     border-bottom: 1px solid #ddd; /* Add a bottom border to separate rows */
 }
+table, th, td {
+    border: 2px solid black;
+    border-style: solid;
+    border-color: brown;
+    border-spacing: 3px;
+    border-collapse: collapse;
+} 
+th:nth-child(odd), td:nth-child(odd){
+    background-color: rgba(228, 255, 155, 0.521);
+}
+th:nth-child(even), td:nth-child(even){
+    background-color: rgba(24, 214, 189, 0.521);
+}
+tr:nth-child(even){
+    background-color: rgb(240, 248, 255);
+}
+tr:hover{
+    color: rgb(255, 255, 255);
+    background-color: rgb(0, 0, 0);
+            
+}
 /* End of Table content */
 
 /*Plots Below */
