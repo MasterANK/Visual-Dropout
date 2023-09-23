@@ -1,6 +1,46 @@
 <!DOCTYPE html>
 <html>
-  <body>
-    <p>This is a sample paragraph</p>
-  </body>
-</html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
+        <script defer src="https://pyscript.net/latest/pyscript.js"></script>
+
+        <script src='https://cdn.plot.ly/plotly-2.26.0.min.js'></script>
+        <link rel="stylesheet" type="text/css" href="basestyle.css" />
+    </head>
+
+    <body>
+      <div id="linearplot"></div>
+        <py-config>
+            packages = [
+              "pandas",
+              "plotly"
+            ]
+        </py-config>
+
+        <py-script>
+            import pandas as pd
+            from pyodide.http import open_url
+            import plotly.express as px
+            import plotly.graph_objs as go
+            import plotly
+            import json
+            import js
+            import html
+            
+            #csv linking below
+            url = 'https://raw.githubusercontent.com/MasterANK/Visual-Dropout/main/Statement_SES_2010-11-DropOut.csv'
+            url_content = open_url(url)
+
+            #dataframe building
+            rcsv = pd.read_csv(url_content)
+            df = pd.DataFrame(rcsv)
+
+            def linplot():
+                print("Under Work")
+
+          </py-script>
+
+        </body>
+    
+    </html>
