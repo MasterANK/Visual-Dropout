@@ -1,3 +1,85 @@
+body {
+    margin: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+   }
+
+#showbody {
+    margin: 8px;
+}
+
+#logoimg {
+    size: 50px;
+}
+
+.button-container  img {
+    max-width: 20px; /* Set the maximum width to the button's width */
+    max-height: 20px; /* Adjust the maximum height as needed */
+    vertical-align: middle; /* Optional: align the image vertically *//* Optional: add some spacing between image and text */
+  }
+
+#header {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    box-sizing: border-box;
+    background-size: cover;
+    margin: 0;
+  }
+
+#upperimg {
+    height: 100px;
+    width: 100%;
+    margin: 0;
+    display: block;
+    box-sizing: border-box;
+    background-size: cover;
+}
+.image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, transparent 0%, transparent 70%, rgba(255, 255, 255, 1) 100%);
+    pointer-events: none; /* Ensures that the overlay doesn't interfere with interactions. */
+  }
+
+.text-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #2500f4; /* Text color (white) */
+    text-shadow: -1px -1px 0 #ffffff, 1px -1px 0 #ffffff, -1px 1px 0 #ffffff, 1px 1px 0 #ffffff;
+    text-align: center; /* Center the text horizontally */
+    font-size: 24px;
+    font-weight: bold;
+  }
+
+.button-container {
+    position: absolute;
+    top: 50%;
+    right: 3px; /* Adjust the right distance as needed */
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: row; /* Stack buttons vertically */
+    gap: 5px; /* Adjust the gap between buttons as needed */
+    flex-wrap: wrap;
+  }
+  
+  .button-container button {
+    background-color: #007bff; /* Button background color */
+    color: #fff; /* Button text color (white) */
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    size: 50px;
+    border-radius: 10px;
+  }
+
 /* Table Content below */
 #table-container {
     max-height: 300px; /* Adjust the maximum height as needed */
@@ -36,7 +118,7 @@
 .plots {
     width: auto; /* Set the desired width for your container */
     height: auto; /* Set the desired height for your container */
-    overflow: hidden; /* Hide the overflow to crop the image */
+    overflow: auto; /* Hide the overflow to crop the image */
 }
 #plot-container {
     text-align: center; /* Center align content within the container */
@@ -63,6 +145,11 @@
 .catselector {
     display: flex; /* Use flexbox */
     align-items: center; /* Vertically center the content */
+}
+
+.catselector p{
+    font-size: 18px;
+    font-family: 'georgia';
 }
 
 /* Optional styles for spacing between the elements */
@@ -99,4 +186,17 @@
     display: flex; /* Use flexbox */
     align-items: center; /* Vertically center the content */ 
     flex-wrap: wrap;
+}
+
+#lplot {
+    width: auto; /* Set the desired width for your container */
+    height: auto; /* Set the desired height for your container */
+    overflow: auto; /* Hide the overflow to crop the image */
+    max-width: 100%;
+}
+#rplot {
+    width: auto; /* Set the desired width for your container */
+    height: auto; /* Set the desired height for your container */
+    overflow: auto; /* Hide the overflow to crop the image */
+    max-width: 100%;
 }

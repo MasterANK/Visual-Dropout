@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
         <script defer src="https://pyscript.net/latest/pyscript.js"></script>
 
@@ -12,10 +12,35 @@
         <!-- Helpers Syntax Below (DELETE THIS ON RELEASE)
         pyscript.interpreter.globals.get('main')
         -->
+        <link rel="icon" type="image/x-icon" href="favico.ico">
     </head>
 
     <body>
+        <div id="header">
+            <img id="upperimg" src="Polygon Luminary (1).svg">
+            <div class="image-overlay">
+                <img src="error_window_icon_193961.svg" id="logoimg">
+            </div>
+            <div class="text-overlay">
+                <h3>Team 404</h3>
+            </div>
+            <div class="button-container">
+                <a href="#compare-holder">
+                    <button>
+                        <img src="compare-icon.png">
+                    </button>
+                </a>
+                <a>
+                    <button onclick="alert('UNDER DEVELOPMENT!')">
+                        <img src="Forecast-icon.png">
+                    </button>
+                </a>
+            </div>
+        </div>
+    <div id="showbody">
         <div id="table-container"></div>
+
+        <hr>
         <div class=catselector>
             <p>Visualize Data</p>
         <select id="dropdown">
@@ -36,10 +61,11 @@
                 <div id="plot2" class="plots"></div>
             </div>
             <div id="centered-image">
-                <div id="plot3"></div>
+                <div id="plot3" class="plots"></div>
             </div>
         </div>
 
+        <hr>
         <div id="compare-holder">
             <div id="lCompare">
                 <select id="ldropdown2">
@@ -58,8 +84,8 @@
                     <option value="pie">Pie Chart</option>
                     <option value="bar">Bar Graph</option>
                 </select>
-                <div id="plotholder">
-                    <div id="lplot"></div>
+                <div id="plot-containers">
+                    <div id="lplot" class="plots"></div>
                 </div>
             </div>
 
@@ -80,12 +106,12 @@
                     <option value="pie">Pie Chart</option>
                     <option value="bar">Bar Graph</option>
                 </select>
-                <div id="plotholder">
-                    <div id="rplot"></div>
+                <div id="plot-containers">
+                    <div id="rplot" class="plots"></div>
                 </div>
             </div>
         </div>
-
+    </div>
         <script>
 var dropdown = document.getElementById("dropdown");
 
@@ -166,6 +192,13 @@ rplotdropdown.addEventListener("change", function () {
                 ##plotly All Categories - Classes I-V Drawings#
                 #line plot
                 fig= px.line(df, x='Year', y=[yaxis+'Boys',yaxis+'Girls'], markers =True)
+                fig.update_layout(legend=dict(
+                        orientation="h",
+                        yanchor="bottom",
+                        y=1.02,
+                        xanchor="right",
+                        x=1
+                    ))
                 graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
                 js.Plotly.newPlot("plot1", js.JSON.parse(graphJSON))
 
@@ -187,7 +220,14 @@ rplotdropdown.addEventListener("change", function () {
                 #line plot
                 global comfig
                 if charttype == "line":
-                    comfig= px.line(df, x='Year', y=[yaxis+'Boys',yaxis+'Girls'], markers =True)
+                    comfig= px.line(df, x='Year', y=[yaxis+'Boys',yaxis+'Girls'])
+                    comfig.update_layout(legend=dict(
+                        orientation="h",
+                        yanchor="bottom",
+                        y=1.02,
+                        xanchor="right",
+                        x=1
+                    ))
                 elif charttype == "pie":
                     #pie plot
                     avg_boys = df[yaxis+'Boys'].sum()/len(df['Year'])
@@ -195,7 +235,7 @@ rplotdropdown.addEventListener("change", function () {
                     comfig = px.pie(values=[avg_boys,avg_girls], names=['Boys','Girls'])
                 elif charttype == "bar":
                     #bar graph
-                    comfig = px.bar(df,x='Year',y=yaxis+'Total',width=700, height=400)
+                    comfig = px.bar(df,x='Year',y=yaxis+'Total')
                     comfig.update_layout(yaxis_range=[0,100])
                 graphJSON = json.dumps(comfig, cls=plotly.utils.PlotlyJSONEncoder)
                 js.Plotly.newPlot("lplot", js.JSON.parse(graphJSON))
@@ -205,7 +245,14 @@ rplotdropdown.addEventListener("change", function () {
                 #line plot
                 global comfig
                 if charttype == "line":
-                    comfig= px.line(df, x='Year', y=[yaxis+'Boys',yaxis+'Girls'], markers =True)
+                    comfig= px.line(df, x='Year', y=[yaxis+'Boys',yaxis+'Girls'])
+                    comfig.update_layout(legend=dict(
+                        orientation="h",
+                        yanchor="bottom",
+                        y=1.02,
+                        xanchor="right",
+                        x=1
+                    ))
                 elif charttype == "pie":
                     #pie plot
                     avg_boys = df[yaxis+'Boys'].sum()/len(df['Year'])
@@ -213,11 +260,12 @@ rplotdropdown.addEventListener("change", function () {
                     comfig = px.pie(values=[avg_boys,avg_girls], names=['Boys','Girls'])
                 elif charttype == "bar":
                     #bar graph
-                    comfig = px.bar(df,x='Year',y=yaxis+'Total',width=700, height=400)
+                    comfig = px.bar(df,x='Year',y=yaxis+'Total')
                     comfig.update_layout(yaxis_range=[0,100])
                 graphJSON = json.dumps(comfig, cls=plotly.utils.PlotlyJSONEncoder)
                 js.Plotly.newPlot("rplot", js.JSON.parse(graphJSON))
 
+                #,width=700, height=400
             plotg()
             lplotcompare()
             rplotcompare()
